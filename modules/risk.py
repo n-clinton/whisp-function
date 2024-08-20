@@ -1,12 +1,8 @@
 import pandas as pd
 import ee
 
+from config_runtime import percent_or_ha, geometry_area_column, lookup_gee_datasets_df
 
-from parameters.config_runtime import (
-    percent_or_ha, 
-    geometry_area_column,
-    lookup_gee_datasets_df
-    )
 
 def clamp(value, min_val, max_val):
     """
@@ -25,11 +21,13 @@ def clamp(value, min_val, max_val):
     else:
         return max(min_val, min(value, max_val))
 
+
 def check_range(value):
     if not (0 <= value <= 100):
         raise ValueError("Value must be between 0 and 100.")
     # else:
     #     print("Value is within the range.")
+
 
 def whisp_risk(
     df,
@@ -199,7 +197,8 @@ def add_indicators (df,
                                             low_name=low_name,
                                             high_name=high_name)
                     return df_w_indicators
-    
+
+
 def add_indicator_column(df, input_columns, threshold, new_column_name, low_name='yes', high_name='no', sum_comparison=False):
     """
     Add a new column to the DataFrame based on the specified columns, threshold, and comparison sign.
@@ -256,6 +255,7 @@ def get_exclude_list(lookup_gee_datasets_df):
     """
     return list(lookup_gee_datasets_df["dataset_name"][(lookup_gee_datasets_df["exclude"] == 1)])
 
+
 def get_all_datasets_list(lookup_gee_datasets_df):
     """
     Generate a list of all dataset names, excluding those marked for exclusion.
@@ -269,6 +269,7 @@ def get_all_datasets_list(lookup_gee_datasets_df):
     lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
     return list(lookup_gee_datasets_df["dataset_name"])
 
+
 def get_presence_only_flag_list(lookup_gee_datasets_df):
     """
     Generate a list of dataset names that have the presence only flag, excluding those marked for exclusion.
@@ -281,6 +282,7 @@ def get_presence_only_flag_list(lookup_gee_datasets_df):
     """
     lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
     return list(lookup_gee_datasets_df["dataset_name"][(lookup_gee_datasets_df["presence_only_flag"] == 1)])
+
 
 def get_decimal_place_column_list(lookup_gee_datasets_df):
     """
@@ -297,6 +299,7 @@ def get_decimal_place_column_list(lookup_gee_datasets_df):
     presence_only_flag_list = list(lookup_gee_datasets_df["dataset_name"][(lookup_gee_datasets_df["presence_only_flag"] == 1)])
     return [i for i in all_datasets_list if i not in presence_only_flag_list]
 
+
 def get_order_list(lookup_gee_datasets_df):
     """
     Generate a list of dataset names in a specific order, excluding those marked for exclusion.
@@ -309,6 +312,7 @@ def get_order_list(lookup_gee_datasets_df):
     """
     lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
     return order_list_from_lookup(lookup_gee_datasets_df) 
+
 
 def get_cols_ind_1_treecover(lookup_gee_datasets_df):
     """
@@ -326,6 +330,7 @@ def get_cols_ind_1_treecover(lookup_gee_datasets_df):
         (lookup_gee_datasets_df["theme"] == "treecover")
     ])
 
+
 def get_cols_ind_2_commodities(lookup_gee_datasets_df):
     """
     Generate a list of dataset names for the commodities theme, excluding those marked for exclusion.
@@ -341,6 +346,7 @@ def get_cols_ind_2_commodities(lookup_gee_datasets_df):
         (lookup_gee_datasets_df["use_for_risk"] == 1) &
         (lookup_gee_datasets_df["theme"] == "commodities")
     ])
+
 
 def get_cols_ind_3_dist_before_2020(lookup_gee_datasets_df):
     """
@@ -358,6 +364,7 @@ def get_cols_ind_3_dist_before_2020(lookup_gee_datasets_df):
         (lookup_gee_datasets_df["theme"] == "disturbance_before")
     ])
 
+
 def get_cols_ind_4_dist_after_2020(lookup_gee_datasets_df):
     """
     Generate a list of dataset names for the disturbance after 2020 theme, excluding those marked for exclusion.
@@ -373,7 +380,6 @@ def get_cols_ind_4_dist_after_2020(lookup_gee_datasets_df):
         (lookup_gee_datasets_df["use_for_risk"] == 1) &
         (lookup_gee_datasets_df["theme"] == "disturbance_after")
     ])
-
 
 
 def add_indicator_column_from_csv(csv_file, input_columns, threshold, new_column_name,low_name='low', high_name='high', sum_comparison=False, output_file=None):
@@ -408,8 +414,6 @@ def add_indicator_column_from_csv(csv_file, input_columns, threshold, new_column
         return df
 
 
-
-
 def create_wildcard_column_list(df, wildcard_patterns):
     """
     Create a list of column names based on multiple wildcard patterns.
@@ -423,8 +427,6 @@ def create_wildcard_column_list(df, wildcard_patterns):
     """
     column_lists = [df.filter(like=pattern).columns.tolist() for pattern in wildcard_patterns]
     return [col for sublist in column_lists for col in sublist]
-
-
 
 
 def select_years_in_range(string_list, min_year, max_year):
@@ -453,10 +455,10 @@ def select_years_in_range(string_list, min_year, max_year):
     return selected_strings
 
 
-
 def order_list_from_lookup(lookup_gee_datasets_df):
     return lookup_gee_datasets_df.sort_values(by=['dataset_order'])["dataset_name"].tolist() # names sorted by list
-    
+
+
 def create_column_list_from_lookup(lookup_gee_datasets_df,prefix_columns_list):
     # ordered_dataset_df= lookup_gee_datasets_df.sort_values(by=['dataset_order'])
     
@@ -506,26 +508,7 @@ def make_lookup_from_feature_col(feature_col,join_column,lookup_column,join_colu
         
     return lookup_table
 
+
 def truncate_strings_in_list(input_list, max_length):
     """as name suggests, useful for exporting to shapefiles fort instance where col name length is limited"""
     return [string[:max_length] for string in input_list]
-
-###alternative vedrsion for clarity
-# If 'Treecover_indicator' is "no", or 'Commodities_indicator' is "yes", or 'Disturbance_before_2020_indicator' is "yes", then set 'EUDR_risk' to "low".
-# If 'Disturbance_after_2020_indicator' is "yes", (and previous condition is not true), then set 'EUDR_risk' to "high".
-# If none of the above conditions are met, set 'EUDR_risk' to "more_info_needed".
-
-# def calculate_eudr_risk(df):
-#     for index, row in df.iterrows():
-#         if (row['Treecover_indicator'] == "no" or
-#             row['Commodities_indicator'] == "yes" or
-#             row['Disturbance_before_2020_indicator'] == "yes"):
-#             df.at[index, 'EUDR_risk'] = "low"
-#         elif row['Disturbance_after_2020_indicator'] == "yes":
-#             df.at[index, 'EUDR_risk'] = "high"
-#         else:
-#             df.at[index, 'EUDR_risk'] = "more_info_needed"
-#     return df
-
-
-
