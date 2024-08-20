@@ -233,9 +233,10 @@ def add_indicator_column(df, input_columns, threshold, new_column_name, low_name
             ## So that threshold is always in percent, if outputs are in ha, the code converts to percent (based on dividing by the geometry_area_column column. 
             # Clamping is needed due to differences in decimal places (meaning input values may go just over 100)
             if percent_or_ha == "ha": 
-                # if df[geometry_area_column]<0.01: #to add in for when points, some warning message or similar
-
-                val_to_check = clamp(((df[col] / df[geometry_area_column]) * 100),0,100)
+                # if df[geometry_area_column]<0.01: #to add in for when points, some warning message or similar.
+                val_to_check = clamp(
+                  ((pd.to_numeric(df[col]) / pd.to_numeric(df[geometry_area_column])) * 100), 
+                0, 100)
             else:
                 val_to_check = df[col]
             df.loc[val_to_check > threshold, new_column_name] = high_name
