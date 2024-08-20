@@ -71,13 +71,13 @@ def whisp_risk(
     """
     
     if ind_1_input_columns is None:
-        ind_1_input_columns = get_cols_ind_1_treecover(lookup_gee_datasets_df)
+        ind_1_input_columns = get_cols_ind_1_treecover(lookup_gee_datasets)
     if ind_2_input_columns is None:
-        ind_2_input_columns = get_cols_ind_2_commodities(lookup_gee_datasets_df)
+        ind_2_input_columns = get_cols_ind_2_commodities(lookup_gee_datasets)
     if ind_3_input_columns is None:
-        ind_3_input_columns = get_cols_ind_3_dist_before_2020(lookup_gee_datasets_df)
+        ind_3_input_columns = get_cols_ind_3_dist_before_2020(lookup_gee_datasets)
     if ind_4_input_columns is None:
-        ind_4_input_columns = get_cols_ind_4_dist_after_2020(lookup_gee_datasets_df)
+        ind_4_input_columns = get_cols_ind_4_dist_after_2020(lookup_gee_datasets)
 
     # Check range of values
     check_range(ind_1_pcent_threshold)
@@ -243,142 +243,142 @@ def add_indicator_column(df, input_columns, threshold, new_column_name, low_name
 
 
 # make lists for formatting - including a few distinctions for dataset types and preferred formatting
-def get_exclude_list(lookup_gee_datasets_df):
+def get_exclude_list(lookup_gee_datasets):
     """
     Generate a list of dataset names that are marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names to be excluded.
     """
-    return list(lookup_gee_datasets_df["dataset_name"][(lookup_gee_datasets_df["exclude"] == 1)])
+    return list(lookup_gee_datasets["dataset_name"][(lookup_gee_datasets["exclude"] == 1)])
 
 
-def get_all_datasets_list(lookup_gee_datasets_df):
+def get_all_datasets_list(lookup_gee_datasets):
     """
     Generate a list of all dataset names, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of all dataset names excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return list(lookup_gee_datasets_df["dataset_name"])
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return list(lookup_gee_datasets["dataset_name"])
 
 
-def get_presence_only_flag_list(lookup_gee_datasets_df):
+def get_presence_only_flag_list(lookup_gee_datasets):
     """
     Generate a list of dataset names that have the presence only flag, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names with the presence only flag, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return list(lookup_gee_datasets_df["dataset_name"][(lookup_gee_datasets_df["presence_only_flag"] == 1)])
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return list(lookup_gee_datasets["dataset_name"][(lookup_gee_datasets["presence_only_flag"] == 1)])
 
 
-def get_decimal_place_column_list(lookup_gee_datasets_df):
+def get_decimal_place_column_list(lookup_gee_datasets):
     """
     Generate a list of dataset names that do not have the presence only flag, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names without the presence only flag, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    all_datasets_list = list(lookup_gee_datasets_df["dataset_name"])
-    presence_only_flag_list = list(lookup_gee_datasets_df["dataset_name"][(lookup_gee_datasets_df["presence_only_flag"] == 1)])
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    all_datasets_list = list(lookup_gee_datasets["dataset_name"])
+    presence_only_flag_list = list(lookup_gee_datasets["dataset_name"][(lookup_gee_datasets["presence_only_flag"] == 1)])
     return [i for i in all_datasets_list if i not in presence_only_flag_list]
 
 
-def get_order_list(lookup_gee_datasets_df):
+def get_order_list(lookup_gee_datasets):
     """
     Generate a list of dataset names in a specific order, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: Ordered list of dataset names, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return order_list_from_lookup(lookup_gee_datasets_df) 
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return order_list_from_lookup(lookup_gee_datasets) 
 
 
-def get_cols_ind_1_treecover(lookup_gee_datasets_df):
+def get_cols_ind_1_treecover(lookup_gee_datasets):
     """
     Generate a list of dataset names for the treecover theme, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names set to be used in the risk calculations for the treecover theme, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return list(lookup_gee_datasets_df["dataset_name"][
-        (lookup_gee_datasets_df["use_for_risk"] == 1) &
-        (lookup_gee_datasets_df["theme"] == "treecover")
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return list(lookup_gee_datasets["dataset_name"][
+        (lookup_gee_datasets["use_for_risk"] == 1) &
+        (lookup_gee_datasets["theme"] == "treecover")
     ])
 
 
-def get_cols_ind_2_commodities(lookup_gee_datasets_df):
+def get_cols_ind_2_commodities(lookup_gee_datasets):
     """
     Generate a list of dataset names for the commodities theme, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names set to be used in the risk calculations for the commodities theme, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return list(lookup_gee_datasets_df["dataset_name"][
-        (lookup_gee_datasets_df["use_for_risk"] == 1) &
-        (lookup_gee_datasets_df["theme"] == "commodities")
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return list(lookup_gee_datasets["dataset_name"][
+        (lookup_gee_datasets["use_for_risk"] == 1) &
+        (lookup_gee_datasets["theme"] == "commodities")
     ])
 
 
-def get_cols_ind_3_dist_before_2020(lookup_gee_datasets_df):
+def get_cols_ind_3_dist_before_2020(lookup_gee_datasets):
     """
     Generate a list of dataset names for the disturbance before 2020 theme, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names set to be used in the risk calculations for the disturbance before 2020 theme, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return list(lookup_gee_datasets_df["dataset_name"][
-        (lookup_gee_datasets_df["use_for_risk"] == 1) &
-        (lookup_gee_datasets_df["theme"] == "disturbance_before")
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return list(lookup_gee_datasets["dataset_name"][
+        (lookup_gee_datasets["use_for_risk"] == 1) &
+        (lookup_gee_datasets["theme"] == "disturbance_before")
     ])
 
 
-def get_cols_ind_4_dist_after_2020(lookup_gee_datasets_df):
+def get_cols_ind_4_dist_after_2020(lookup_gee_datasets):
     """
     Generate a list of dataset names for the disturbance after 2020 theme, excluding those marked for exclusion.
 
     Args:
-    lookup_gee_datasets_df (pd.DataFrame): DataFrame containing dataset information.
+    lookup_gee_datasets (pd.DataFrame): DataFrame containing dataset information.
 
     Returns:
     list: List of dataset names set to be used in the risk calculations  for the disturbance after 2020 theme, excluding those marked for exclusion.
     """
-    lookup_gee_datasets_df = lookup_gee_datasets_df[lookup_gee_datasets_df["exclude"] != 1]
-    return list(lookup_gee_datasets_df["dataset_name"][
-        (lookup_gee_datasets_df["use_for_risk"] == 1) &
-        (lookup_gee_datasets_df["theme"] == "disturbance_after")
+    lookup_gee_datasets = lookup_gee_datasets[lookup_gee_datasets["exclude"] != 1]
+    return list(lookup_gee_datasets["dataset_name"][
+        (lookup_gee_datasets["use_for_risk"] == 1) &
+        (lookup_gee_datasets["theme"] == "disturbance_after")
     ])
 
 
@@ -455,26 +455,26 @@ def select_years_in_range(string_list, min_year, max_year):
     return selected_strings
 
 
-def order_list_from_lookup(lookup_gee_datasets_df):
-    return lookup_gee_datasets_df.sort_values(by=['dataset_order'])["dataset_name"].tolist() # names sorted by list
+def order_list_from_lookup(lookup_gee_datasets):
+    return lookup_gee_datasets.sort_values(by=['dataset_order'])["dataset_name"].tolist() # names sorted by list
 
 
-def create_column_list_from_lookup(lookup_gee_datasets_df,prefix_columns_list):
-    # ordered_dataset_df= lookup_gee_datasets_df.sort_values(by=['dataset_order'])
+def create_column_list_from_lookup(lookup_gee_datasets,prefix_columns_list):
+    # ordered_dataset_df= lookup_gee_datasets.sort_values(by=['dataset_order'])
     
     # column_order_list = list(ordered_dataset_df["dataset_name"])
-    column_order_list = lookup_gee_datasets_df.sort_values(by=['dataset_order'])["dataset_name"].tolist()
+    column_order_list = lookup_gee_datasets.sort_values(by=['dataset_order'])["dataset_name"].tolist()
 
     # adds in a list of columns to the start of the order list (i.e. the geo_id, geometry area column and country columns), if left blank nothing added
-    column_order_list =  prefix_columns_list + order_list_from_lookup(lookup_gee_datasets_df)
+    column_order_list =  prefix_columns_list + order_list_from_lookup(lookup_gee_datasets)
 
     return column_order_list
     
                                    
-def reorder_columns_by_lookup(df,lookup_gee_datasets_df,dataset_order_column,dataset_name_column,prefix_columns_list=[]):    
-    """ reorder columns by creating an ordered list from a lookup_gee_datasets_df containing column order and dataset names that match those in results dataframe"""
-    column_order_list = create_column_list_from_lookup(lookup_gee_datasets_df,prefix_columns_list)
-    # ordered_dataset_df= lookup_gee_datasets_df.sort_values(by=['dataset_order'])
+def reorder_columns_by_lookup(df,lookup_gee_datasets,dataset_order_column,dataset_name_column,prefix_columns_list=[]):    
+    """ reorder columns by creating an ordered list from a lookup_gee_datasets containing column order and dataset names that match those in results dataframe"""
+    column_order_list = create_column_list_from_lookup(lookup_gee_datasets,prefix_columns_list)
+    # ordered_dataset_df= lookup_gee_datasets.sort_values(by=['dataset_order'])
     
     # column_order_list = list(ordered_dataset_df["dataset_name"])
     
