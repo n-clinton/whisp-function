@@ -1,7 +1,7 @@
 import pandas as pd
 import ee
 
-from config_runtime import percent_or_ha, geometry_area_column, lookup_gee_datasets_df
+from config_runtime import percent_or_ha, geometry_area_column, lookup_gee_datasets
 
 
 def clamp(value, min_val, max_val):
