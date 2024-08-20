@@ -1,0 +1,3 @@
+functions-framework==3.*
+earthengine-api>=0.1.200
+pandas==2.2.*
