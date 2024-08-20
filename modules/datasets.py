@@ -1,7 +1,6 @@
 import ee
-
 from datetime import datetime
-from parameters.config_runtime import geometry_area_column
+from config_runtime import geometry_area_column
 
 #add datasets below
 
