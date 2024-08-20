@@ -1,8 +1,8 @@
 import ee
 
-from modules.datasets import combine_datasets
+from datasets import combine_datasets
 
-from parameters.config_runtime import percent_or_ha, plot_id_column, geometry_type_column, geometry_area_column, geometry_area_column_formatting, centroid_x_coord_column, centroid_y_coord_column, country_column, admin_1_column, water_flag, stats_unit_type_column, stats_area_columns_formatting, stats_percent_columns_formatting
+from config_runtime import percent_or_ha, plot_id_column, geometry_type_column, geometry_area_column, geometry_area_column_formatting, centroid_x_coord_column, centroid_y_coord_column, country_column, admin_1_column, water_flag, stats_unit_type_column, stats_area_columns_formatting, stats_percent_columns_formatting
 
 import functools
 
@@ -123,6 +123,7 @@ def percent_and_format(val,area_ha):
     # Return the formatted value
     return ee.Number(formatted_value)
 
+
 def get_stats_feature(feature):
     
     img_combined = combine_datasets() #imported function
@@ -134,22 +135,6 @@ def get_stats_feature(feature):
         maxPixels=1e10,
         tileScale=8
     )
-    ######
-    ## roi attributes
-    ######
-    ## get location
-    
-    ### gaul boundaries - dated, moving towards open licence
-    # location = ee.Dictionary(get_gaul_info(feature.geometry()))
-    
-    # country = ee.Dictionary({country_column: location.get('ADM0_NAME')})
-    
-    ### gadm - non-commercial use only
-    
-    # location = ee.Dictionary(get_gadm_info(feature.geometry().centroid(1)))
-
-    # country = ee.Dictionary({country_column: location.get('GID_0')})
-
     
     ### geoboundaries - freqently updated database; allows commercial use (CC BY 4.0 DEED)
     centroid = feature.geometry().centroid(1)
@@ -176,10 +161,6 @@ def get_stats_feature(feature):
     # combine info on country, geometry type and coordinates into a single dictionary
     feature_info = country.combine(admin_1).combine(geom_type).combine(coords_dict).combine(stats_unit_type).combine(water_flag_dict)
     
-    
-    
-    
-
     ####
     
     # Now, modified_dict contains all keys with the prefix added
@@ -213,10 +194,6 @@ def get_stats_feature(feature):
     
     
     return out_feature
-
-
-
-############
 
     
 def reformat_whisp_fc(feature_collection, 
@@ -295,52 +272,11 @@ def stats_formatter_decorator(func):
         return fc_formatted
     return wrapper
 
+
 @stats_formatter_decorator
 def get_stats_formatted(feature_or_feature_col, **kwargs) -> ee.FeatureCollection:
     fc = get_stats(feature_or_feature_col)
     return fc
-
-
-
-# def get_stats_formatted(feature_collection, flag_positive=None, exclude_properties=None, presence_only_flag_list=None, lookup_gee_datasets_df=None, **kwargs):
-#     """
-#     Example function to process a feature collection.
-
-#     Args:
-#     feature_collection (ee.FeatureCollection): Input feature collection to process.
-#     flag_positive (bool, optional): Flag to determine additional processing. Defaults to False.
-#     exclude_properties (list, optional): List of properties to exclude. Defaults to None.
-#     presence_only_flag_list (list, optional): List of properties with presence-only flag. Defaults to None.
-#     kwargs: Additional keyword arguments for flexibility.
-
-#     Returns:
-#     ee.FeatureCollection: Processed feature collection.
-#     """
-    
-#     if lookup_gee_datasets_df is not None:
-#         if exclude_properties is None:
-#             exclude_properties = exclude_properties or get_exclude_list(lookup_gee_datasets_df)
-#         if presence_only_flag_list is None:
-#             presence_only_flag_list = presence_only_flag_list or get_presence_only_flag_list(lookup_gee_datasets_df)
-#     else:
-        
-
-
-#     # Call the processing function
-#     processed_fc = process_feature_collection(
-#         feature_collection,
-#         flag_positive=flag_positive,
-#         exclude_properties=exclude_properties,
-#         presence_only_flag_list=presence_only_flag_list,
-#         **kwargs
-#     )
-
-
-#     return processed_fc
-
-
-
-##tidying functions
 
 
 def add_id_to_feature_collection(dataset,id_name="PlotID"):
@@ -407,12 +343,4 @@ def round_properties_to_whole_numbers(feature,round_properties):
 # Function to exclude properties
 def copy_properties_and_exclude(feature,exclude_properties):
     return ee.Feature(feature.geometry()).copyProperties(source=feature, exclude=exclude_properties)
-
-
-# # Function to select and rename properties
-# def select_and_rename_properties(feature):
-#     first_feature = ee.Feature(feature_collection.first())
-#     property_names = first_feature.propertyNames().getInfo()
-#     new_property_names = [prop.replace('_', ' ') for prop in property_names]
-#     return feature.select(property_names, new_property_names)
 
